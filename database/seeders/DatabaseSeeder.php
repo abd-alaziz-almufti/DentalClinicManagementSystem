@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
             SpecialtySeeder::class,
             ServiceCategorySeeder::class,
             ServiceSeeder::class,
+            TeethSeeder::class,          // reference data — order-independent, grouped with other lookups
+            ToothConditionSeeder::class,
+            ToothSurfaceSeeder::class,
             RolePermissionSeeder::class,
             UserSeeder::class, // must run AFTER Branch, Specialty, RolePermission
         ]);

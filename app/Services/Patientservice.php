@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class PatientService
 {
+    private const TYPE = 'patient';
+    private const PREFIX = 'PAT';
+
     public function __construct(
-        private readonly PatientNumberGenerator $numberGenerator,
+        private readonly DocumentNumberGenerator $numberGenerator,
     ) {
     }
 
@@ -27,7 +30,7 @@ class PatientService
 
             $patient = Patient::create([
                 ...$data,
-                'patient_number' => $this->numberGenerator->generate($branch),
+                'patient_number' => $this->numberGenerator->generate($branch, self::TYPE, self::PREFIX),
             ]);
 
             // Always create the medical profile row up front (even if empty),
