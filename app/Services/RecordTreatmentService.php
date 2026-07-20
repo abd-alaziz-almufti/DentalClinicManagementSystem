@@ -23,6 +23,11 @@ use Illuminate\Support\Facades\DB;
  */
 class RecordTreatmentService
 {
+    public function __construct(
+        private readonly InventoryDeductionService $inventoryService,
+    ) {
+    }
+
     /**
      * @param  array  $data  tooth_number?, quantity?, unit_price?, discount_amount?, notes?, created_by?
      *
@@ -48,7 +53,7 @@ class RecordTreatmentService
                 throw new \InvalidArgumentException('Discount cannot exceed the service subtotal.');
             }
 
-            return VisitService::create([
+            $visitService = VisitService::create([
                 'visit_id' => $lockedVisit->id,
                 'service_id' => $service->id,
                 'tooth_number' => $data['tooth_number'] ?? null,
@@ -59,6 +64,15 @@ class RecordTreatmentService
                 'notes' => $data['notes'] ?? null,
                 'created_by' => $data['created_by'] ?? null,
             ]);
+
+            // Deduct inventory items mapped to this service
+            $this->inventoryService->deductForService(
+                $visitService,
+                $lockedVisit->branch,
+                $data['created_by'] ?? null
+            );
+
+            return $visitService;
         });
     }
 
@@ -74,6 +88,13 @@ class RecordTreatmentService
                 ->firstOrFail();
 
             VisitEditabilityGuard::assertEditable($lockedVisit);
+
+            // Return deducted items to inventory
+            $this->inventoryService->returnForService(
+                $visitService,
+                $lockedVisit->branch,
+                null
+            );
 
             $visitService->delete();
         });
