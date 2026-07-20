@@ -1,8 +1,8 @@
 # PRD — نظام إدارة عيادة الأسنان (Dental Clinic Management System)
 
-**الإصدار:** V1.1 (يدمج ملاحظات المراجعة المعمارية)
+**الإصدار:** V1.2 (يدمج إكمال الوحدات المالية والمخزون)
 **آخر تحديث:** يوليو 2026
-**الحالة:** Clinical Module (V1) مكتمل بنيوياً — Financial وInventory وHTTP Layer قيد الانتظار
+**الحالة:** الوحدات التأسيسية، السريرية، المالية، والمخزون مكتملة بنيوياً ومختبرة بالكامل — الـ HTTP Layer وربط الـ Frontend قيد الانتظار
 
 ---
 
@@ -257,13 +257,13 @@ Remaining Balance = Invoice.total − SUM(Payments.amount)
 - [x] Patients + Medical Profiles — مبني ومُختبر
 - [x] Appointments + حماية التعارض تحت التزامن الحقيقي — مبني ومُختبر
 - [x] Visits + Check-In Use Case — مبني ومُختبر
-- [x] Visit Services + Snapshot السعر — مبني، بانتظار تأكيد الاختبار
-- [x] Dental Chart — مبني، بانتظار الاختبار
+- [x] Visit Services + Snapshot السعر — مبني ومُختبر بالكامل
+- [x] Dental Chart — مبني ومُختبر بالكامل
 - [x] Attachments (schema فقط) — مبني، الميزة مؤجلة
-- [ ] Financial Module (invoices, invoice_items, payments, expenses)
-- [ ] Inventory Module (بما فيه service_inventory_consumption)
+- [x] Financial Module (invoices, invoice_items, payments - expenses مؤجل)
+- [x] Inventory Module (بما فيه service_inventory_consumption)
 - [ ] HTTP Layer كامل (Controllers/Routes/Policies/Validation) مع معيار API الموحّد
 - [ ] Logging (Application/Audit/Activity)
 - [ ] Operational Requirements (Backup/Restore)
-- [ ] اختبارات آلية
+- [/] اختبارات آلية (مكتملة ومغطاة بالكامل للطبقة المالية والمخزون)
 - [ ] ربط Frontend (Next.js)
