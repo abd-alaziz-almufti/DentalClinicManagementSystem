@@ -24,5 +24,9 @@ class VisitEditabilityGuard
         if (! in_array($visit->status, self::EDITABLE_STATUSES, true)) {
             throw VisitNotEditableException::forStatus($visit->status);
         }
+
+        if ($visit->has_active_invoice) {
+            throw VisitNotEditableException::forActiveInvoice();
+        }
     }
 }

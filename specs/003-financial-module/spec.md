@@ -170,6 +170,9 @@ stateDiagram-v2
   creation. Correcting a mistaken payment requires a reversing payment or
   adjustment entry, never a mutation of the original record (per
   Constitution, Article I, extended explicitly to payments).
+- **FR-019**: A payment record MUST NOT be reversed more than once — attempting
+  to create a second reversal against an already-reversed payment MUST be rejected.
+
 
 ### Key Entities
 
