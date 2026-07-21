@@ -17,7 +17,7 @@ rather than introducing new mechanisms where an existing one already fits.
 - **Language/Framework**: PHP / Laravel (per Constitution, Technology Constraints)
 - **Storage**: MySQL/MariaDB (per Constitution) — confirmed no PostgreSQL-only feature is required by this module (unlike appointments, which needed the MySQL-compatible proxy-lock workaround; this module's concurrency needs are simpler, see research.md R1/R2)
 - **New dependencies**: none — reuses `spatie/laravel-permission` (already installed) and the project's own `DocumentNumberGenerator`
-- **Testing**: Manual verification via Tinker for correctness, plus writing the project's very first automated test suite (Pest/PHPUnit) to verify concurrency safety under simultaneous payment requests (FR-008/FR-016), since no automated test suite has been implemented yet.
+- **Testing**: Manual verification via Tinker for correctness, plus a real concurrent-HTTP-request test for FR-008/FR-016 (same method already used and proven for `AppointmentService::book()`)
 - **Scale/scope**: Single clinic, multi-branch-ready — consistent with existing Foundation/Clinical scope, no new scaling assumptions introduced
 
 ## Constitution Check
