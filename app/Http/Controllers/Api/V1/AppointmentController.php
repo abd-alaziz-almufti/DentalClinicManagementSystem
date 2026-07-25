@@ -42,9 +42,9 @@ class AppointmentController extends Controller
         $perPage = min($request->integer('per_page', 20), 100);
 
         $appointments = QueryBuilder::for($baseQuery)
-            ->allowedFilters(['status', 'doctor_profile_id', 'appointment_date'])
-            ->allowedSorts(['appointment_date', 'start_time'])
-            ->allowedIncludes(['patient', 'doctorProfile', 'doctorProfile.user'])
+            ->allowedFilters('status', 'doctor_profile_id', 'appointment_date')
+            ->allowedSorts('appointment_date', 'start_time')
+            ->allowedIncludes('patient', 'doctorProfile', 'doctorProfile.user')
             ->paginate($perPage);
 
         return $this->respondPaginated(

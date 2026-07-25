@@ -34,9 +34,9 @@ class InvoiceController extends Controller
         $perPage = min($request->integer('per_page', 20), 100);
 
         $invoices = QueryBuilder::for($baseQuery)
-            ->allowedFilters(['status', 'patient_id', 'visit_id'])
-            ->allowedSorts(['created_at', 'total'])
-            ->allowedIncludes(['items', 'payments', 'patient'])
+            ->allowedFilters('status', 'patient_id', 'visit_id')
+            ->allowedSorts('created_at', 'total')
+            ->allowedIncludes('items', 'payments', 'patient')
             ->paginate($perPage);
 
         return $this->respondPaginated(
@@ -53,7 +53,7 @@ class InvoiceController extends Controller
         Gate::authorize('view', $invoice);
 
         $invoice = QueryBuilder::for(Invoice::class)
-            ->allowedIncludes(['items', 'payments', 'patient'])
+            ->allowedIncludes('items', 'payments', 'patient')
             ->whereKey($invoice->id)
             ->firstOrFail();
 

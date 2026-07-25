@@ -45,9 +45,9 @@ class PatientController extends Controller
         $perPage = min($request->integer('per_page', 20), 100);
 
         $patients = QueryBuilder::for($baseQuery)
-            ->allowedFilters(['phone', 'national_id'])
-            ->allowedSorts(['created_at', 'last_name'])
-            ->allowedIncludes(['medicalProfile'])
+            ->allowedFilters('phone', 'national_id')
+            ->allowedSorts('created_at', 'last_name')
+            ->allowedIncludes('medicalProfile')
             ->paginate($perPage);
 
         return $this->respondPaginated(
@@ -83,7 +83,7 @@ class PatientController extends Controller
 
         // Support relations query parameter using spatie query builder
         $patientModel = QueryBuilder::for(Patient::class)
-            ->allowedIncludes(['medicalProfile'])
+            ->allowedIncludes('medicalProfile')
             ->whereKey($patient->id)
             ->firstOrFail();
 
