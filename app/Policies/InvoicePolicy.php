@@ -17,7 +17,7 @@ class InvoicePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super-admin', 'admin', 'accountant']);
+        return $user->hasAnyRole(['super-admin', 'admin', 'doctor', 'accountant']);
     }
 
     public function view(User $user, Invoice $invoice): bool
@@ -27,7 +27,7 @@ class InvoicePolicy
         }
 
         return $invoice->branch_id === $user->branch_id &&
-               $user->hasAnyRole(['admin', 'accountant']);
+               $user->hasAnyRole(['admin', 'doctor', 'accountant']);
     }
 
     public function create(User $user): bool
