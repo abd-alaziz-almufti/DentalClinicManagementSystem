@@ -30,7 +30,7 @@ class CheckInPatientService
     }
 
     /**
-     * @param  int|null  $checkedInBy  user id of the receptionist performing check-in
+     * @param  int|null  $checkedInBy  user id of the staff member (admin or doctor) performing check-in
      *
      * @throws InvalidAppointmentStatusException
      */

@@ -93,7 +93,7 @@ returns the correct envelope shape with the correct `error_code`.
 
 ## Phase 6: Financial ⚠ (see flag at top of file — confirm names first)
 
-- [ ] **T043** `[P]` `InvoicePolicy` — `admin` read-only within branch (FR-018), write actions restricted to `accountant`/`super-admin`
+- [ ] **T043** `[P]` `InvoicePolicy` — `doctor` scoped to visits where they are the treating doctor; `admin` scoped to their own branch; `super-admin` sees all (no write restriction between admin and doctor — both may generate/cancel invoices and record payments within their scope; FR-018)
 - [ ] **T044** `[P]` `InvoiceResource`, `InvoiceItemResource`, `PaymentResource`
 - [ ] **T045** `[P]` `RecordPaymentRequest` (amount, payment_method, payment_date)
 - [ ] **T046** `InvoiceController@store` (generate) — calls existing `GenerateInvoiceService`; verify `VisitAlreadyInvoicedException` envelope
@@ -105,7 +105,7 @@ returns the correct envelope shape with the correct `error_code`.
 
 ## Phase 7: Inventory ⚠ (names inferred — confirm before running)
 
-- [ ] **T050** `[P]` Policies for `inventory_items` / `purchases` (scoped to `inventory-manager`, `super-admin`; read-only for others per role table)
+- [ ] **T050** `[P]` Policies for `inventory_items` / `purchases` — `admin` scoped to their own branch, `doctor` has the same write access within their scope, `super-admin` unrestricted; no role-based distinction between admin and doctor for inventory operations
 - [ ] **T051** `[P]` Resources for the Inventory domain's existing Models
 - [ ] **T052** `InventoryItemController@index` — `BranchScopeFilter` + query builder (filter: low-stock threshold, per PRD §8 Phase 4 "Low-Stock Items" report)
 - [ ] **T053** `PurchaseController@store` — calls your existing Purchase-recording Service unchanged

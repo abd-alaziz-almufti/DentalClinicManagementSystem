@@ -38,11 +38,11 @@ to each module's quirks individually.
    **Then** the response is an error envelope with an appropriate
    unauthorized status, and no token is issued.
 
-3. **Given** a valid bearer token belonging to a `receptionist`, **When**
-   a request is made to an action reserved for `accountant` (e.g.,
-   recording a payment), **Then** the response is a uniform
-   "forbidden" error envelope — the request MUST NOT reach the underlying
-   Service class at all.
+3. **Given** a valid bearer token belonging to an `admin`, **When**
+   a request is made to an action reserved exclusively for `doctor` (e.g.,
+   recording a treatment or a dental chart entry), **Then** the response is
+   a uniform "forbidden" error envelope — the request MUST NOT reach the
+   underlying Service class at all.
 
 4. **Given** a request missing a required field (e.g., registering a
    patient without `first_name`), **When** submitted, **Then** the
@@ -114,10 +114,9 @@ to each module's quirks individually.
   endpoints MUST NOT each implement their own try/catch-and-format logic
   for domain exceptions.
 - **FR-005**: Every endpoint MUST enforce role-based authorization
-  consistent with the roles already defined (Constitution/Foundation:
-  `super-admin`, `admin`, `doctor`, `receptionist`, `accountant`,
-  `inventory-manager|`), rejecting unauthorized requests before any
-  Service class executes.
+  consistent with the three roles defined in the system
+  (`super-admin`, `admin`, `doctor`), rejecting unauthorized requests
+  before any Service class executes.
 - **FR-006**: The response language MUST be resolved once per request
   (from a request header) and applied consistently to every message the
   response contains — success or error — per Constitution Article IX.
@@ -136,8 +135,7 @@ to each module's quirks individually.
 - **FR-011**: A `doctor` role MUST only see patients, appointments, and
   visits where they are the treating doctor — not the full clinic patient
   or appointment directory. Browsing the complete patient directory is
-  reserved for `receptionist`, `admin`, and `super-admin` (resolves
-  Clarification Q1).
+  reserved for `admin` and `super-admin` (resolves Clarification Q1).
 - **FR-012**: Any concurrency guarantee already verified at the Service
   layer (appointment booking, payment recording) MUST hold identically
   when the same operation is invoked through its HTTP endpoint — the HTTP
@@ -159,10 +157,13 @@ to each module's quirks individually.
   after issuance (a single working shift), requiring re-authentication
   thereafter — no indefinitely-lived token may remain valid (resolves
   Clarification Q2).
-- **FR-018**: An `admin` MUST have read-only access to financial records
-  (invoices, payments) within their own branch; recording, modifying, or
-  cancelling payments/invoices remains reserved for `accountant` and
-  `super-admin` (resolves Clarification Q4).
+- **FR-018**: Writing clinical treatment records (visit services, dental
+  chart entries) is reserved exclusively for the `doctor` role — `admin`
+  and `super-admin` MUST NOT be permitted to record or modify clinical
+  treatment data directly. All other write operations (invoices, payments,
+  inventory, patient registration, appointments) are available to both
+  `admin` and `doctor` within their respective scope (resolves
+  Clarification Q4).
 
 ### Key Entities (Response Contracts)
 
@@ -340,10 +341,14 @@ this catalog before it ships — an exception without a cataloged
   endpoint?**
   **A3**: 5 attempts per minute per email+IP combination (FR-015).
 
-- **Q4: Should `admin` (branch-scoped) be allowed to view invoices/
-  payments for their branch?**
-  **A4**: Yes, read-only, scoped to their own branch. Write actions
-  remain exclusive to `accountant` and `super-admin` (FR-018).
+- **Q4: What is the only remaining role-based write restriction now that
+  the system uses three roles (super-admin, admin, doctor)?**
+  **A4**: Clinical treatment writing (visit services, dental chart entries)
+  is exclusively the doctor's domain — admin and super-admin have no
+  business recording or altering treatment data directly. All other write
+  operations (invoicing, payments, patient registration, appointments,
+  inventory) are equally available to both admin and doctor within their
+  own scope (FR-018).
 
 ## Review & Acceptance Checklist
 

@@ -15,9 +15,6 @@ class RolePermissionSeeder extends Seeder
             'super-admin',
             'admin',
             'doctor',
-            'receptionist',
-            'accountant',
-            'inventory-manager',
         ];
 
         foreach ($roles as $role) {
@@ -27,7 +24,7 @@ class RolePermissionSeeder extends Seeder
         // Permissions can be added incrementally per module as it's built, e.g.:
         // Permission::firstOrCreate(['name' => 'patients.view']);
         // Permission::firstOrCreate(['name' => 'patients.create']);
-        // then: Role::findByName('receptionist')->givePermissionTo(['patients.view', 'patients.create']);
+        // then: Role::findByName('admin')->givePermissionTo(['patients.view', 'patients.create']);
         // Left empty for now — will fill in as each module (Patients, Appointments...) is designed.
     }
 }

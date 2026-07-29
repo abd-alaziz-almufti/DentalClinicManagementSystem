@@ -9,7 +9,7 @@
 
 ### Primary User Story
 
-As a receptionist or accountant, once a doctor marks a patient's visit as
+As an admin or doctor, once a doctor marks a patient's visit as
 completed, I need to generate an invoice reflecting exactly what was billed
 during that visit, record one or more payments against it (the patient may
 pay in full or in installments), and always know the correct outstanding
