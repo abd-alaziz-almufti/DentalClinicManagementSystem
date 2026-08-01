@@ -38,10 +38,10 @@ class VisitController extends Controller
 
         $perPage = min($request->integer('per_page', 20), 100);
 
-        $visits = QueryBuilder::for($baseQuery)
+        $visits = QueryBuilder::for($baseQuery->with('doctorProfile.user'))
             ->allowedFilters('status', 'doctor_profile_id', 'patient_id')
             ->allowedSorts('checked_in_at', 'created_at')
-            ->allowedIncludes('patient', 'visitServices', 'visitTeeth', 'doctorProfile', 'doctorProfile.user')
+            ->allowedIncludes(['patient', 'visitServices', 'visitTeeth', 'doctorProfile'])
             ->paginate($perPage);
 
         return $this->respondPaginated(

@@ -24,6 +24,10 @@ class VisitResource extends JsonResource
             'treatment_plan'   => $this->treatment_plan,
             'has_active_invoice' => $this->has_active_invoice,
             'patient'          => new PatientResource($this->whenLoaded('patient')),
+            'doctor'           => $this->whenLoaded('doctorProfile', fn() => [
+                'id'   => $this->doctorProfile->id,
+                'name' => $this->doctorProfile->user?->name,
+            ]),
             'services'         => VisitServiceResource::collection($this->whenLoaded('visitServices')),
             'teeth'            => VisitToothResource::collection($this->whenLoaded('visitTeeth')),
             'created_at'       => $this->created_at?->toDateTimeString(),
