@@ -28,7 +28,7 @@ class DentalChartController extends Controller
      */
     public function store(DentalChartEntryRequest $request, Visit $visit): JsonResponse
     {
-        Gate::authorize('update', $visit);
+        Gate::authorize('recordClinicalData', $visit);
 
         $data      = $request->validated();
         $tooth     = Tooth::findOrFail($data['tooth_id']);
@@ -58,7 +58,7 @@ class DentalChartController extends Controller
      */
     public function destroy(Request $request, Visit $visit, VisitTooth $visitTooth): JsonResponse
     {
-        Gate::authorize('update', $visit);
+        Gate::authorize('recordClinicalData', $visit);
 
         $this->chartService->removeEntry($visitTooth);
 

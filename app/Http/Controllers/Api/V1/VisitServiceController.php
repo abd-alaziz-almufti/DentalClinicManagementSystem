@@ -27,7 +27,7 @@ class VisitServiceController extends Controller
      */
     public function store(RecordTreatmentRequest $request, Visit $visit): JsonResponse
     {
-        Gate::authorize('update', $visit);
+        Gate::authorize('recordClinicalData', $visit);
 
         $data    = $request->validated();
         $service = Service::findOrFail($data['service_id']);
@@ -49,7 +49,7 @@ class VisitServiceController extends Controller
      */
     public function destroy(Request $request, Visit $visit, VisitService $visitService): JsonResponse
     {
-        Gate::authorize('update', $visit);
+        Gate::authorize('recordClinicalData', $visit);
 
         $this->treatmentService->removeService($visitService);
 
