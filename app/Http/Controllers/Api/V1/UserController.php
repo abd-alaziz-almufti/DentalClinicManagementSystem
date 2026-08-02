@@ -3,82 +3,62 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\DoctorProfile;
 use App\Models\User;
-use App\Services\Support\BranchScopeFilter;
-use Illuminate\Http\JsonResponse;
+use App\Services\CreateUserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of users.
-     */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         Gate::authorize('viewAny', User::class);
 
-        $user = $request->user();
-        $baseQuery = User::query();
+        $query = User::query()->with(['branch', 'doctorProfile.specialty', 'roles']);
 
-        // Scope by branch for non-super-admin
-        $baseQuery = BranchScopeFilter::apply($baseQuery, $user);
+        // Simple, explicit branch scoping (Constitution Article III/VI —
+        // explicit over implicit; matches the same rule applied
+        // everywhere else, kept inline here rather than assuming
+        // BranchScopeFilter's exact method signature).
+        if (! $request->user()->hasRole('super-admin')) {
+            $query->where('branch_id', $request->user()->branch_id);
+        }
 
-        $perPage = min($request->integer('per_page', 20), 100);
+        $users = QueryBuilder::for($query)
+            ->allowedFilters([
+                AllowedFilter::exact('branch_id'),
+                AllowedFilter::callback('role', fn ($q, $value) => $q->whereHas(
+                    'roles',
+                    fn ($r) => $r->where('name', $value)
+                )),
+            ])
+            ->allowedSorts(['name', 'created_at'])
+            ->defaultSort('-created_at')
+            ->paginate(min((int) $request->integer('per_page', 20), 100));
 
-        $users = QueryBuilder::for($baseQuery->with('branch', 'doctorProfile.specialty'))
-            ->allowedFilters(['name', 'email'])
-            ->allowedSorts(['created_at', 'name'])
-            ->allowedIncludes(['branch', 'doctorProfile'])
-            ->paginate($perPage);
-
-        return $this->respondPaginated(
-            UserResource::collection($users),
-            'Users retrieved successfully.'
-        );
+        return $this->respondPaginated(UserResource::collection($users));
     }
 
-    /**
-     * Create a new user.
-     */
-    public function store(CreateUserRequest $request): JsonResponse
+    public function store(StoreUserRequest $request, CreateUserService $service)
     {
-        Gate::authorize('create', User::class);
-
         $data = $request->validated();
 
-        $user = DB::transaction(function () use ($data) {
-            $user = User::create([
-                'name'      => $data['name'],
-                'email'     => $data['email'],
-                'password'  => Hash::make($data['password']),
-                'branch_id' => $data['branch_id'],
-            ]);
+        // An admin (not super-admin) can only ever create users within
+        // their own branch — whatever branch_id they submitted is
+        // ignored and overridden here, never trusted from input.
+        if (! $request->user()->hasRole('super-admin')) {
+            $data['branch_id'] = $request->user()->branch_id;
+        }
 
-            $user->assignRole($data['role']);
-            $user->syncSuperAdminFlag();
+        $user = $service->create($data);
 
-            if ($data['role'] === 'doctor') {
-                DoctorProfile::create([
-                    'user_id'        => $user->id,
-                    'license_number' => $data['license_number'] ?? 'LIC-' . rand(1000, 9999),
-                    'specialty_id'   => $data['specialty_id'] ?? null,
-                    'color'          => $data['color'] ?? '#0D9488',
-                ]);
-            }
-
-            return $user;
-        });
-
-        return $this->respondCreated(
-            new UserResource($user->load('branch', 'doctorProfile.specialty')),
-            'User created successfully.'
+        return $this->respondSuccess(
+            new UserResource($user),
+            __('Users created successfully.')
         );
     }
 }

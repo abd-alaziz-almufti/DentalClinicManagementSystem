@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\ServiceInventoryConsumptionController;
 use App\Http\Controllers\Api\V1\VisitController;
 use App\Http\Controllers\Api\V1\VisitServiceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\BranchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,4 +83,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Users & Permissions
     Route::get('/users', [\App\Http\Controllers\Api\V1\UserController::class, 'index']);
     Route::post('/users', [\App\Http\Controllers\Api\V1\UserController::class, 'store']);
+
+    // Branches
+    Route::get('/branches', [BranchController::class, 'index']);
+    Route::get('/branches/{branch}', [BranchController::class, 'show']);
+    Route::put('/branches/{branch}', [BranchController::class, 'update']);
 });

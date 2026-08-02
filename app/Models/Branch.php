@@ -21,6 +21,7 @@ class Branch extends Model
         'city',
         'logo',
         'is_active',
+        'tax_number', 'currency_code',
     ];
 
     protected $casts = [
