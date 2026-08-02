@@ -78,4 +78,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/services/{service}/consumption', [ServiceInventoryConsumptionController::class, 'index']);
     Route::post('/services/{service}/consumption', [ServiceInventoryConsumptionController::class, 'store']);
     Route::delete('/services/{service}/consumption/{consumption}', [ServiceInventoryConsumptionController::class, 'destroy']);
+
+    // Users & Permissions
+    Route::get('/users', [\App\Http\Controllers\Api\V1\UserController::class, 'index']);
+    Route::post('/users', [\App\Http\Controllers\Api\V1\UserController::class, 'store']);
 });
