@@ -13,8 +13,9 @@ class InvoiceItemResource extends JsonResource
             'id'              => $this->id,
             'invoice_id'      => $this->invoice_id,
             'visit_service_id'=> $this->visit_service_id,
-            'service_id'      => $this->service_id,
-            'service_name'    => $this->service_name,
+            'service_name'    => is_array($this->service_name)
+                ? ($this->service_name[$request->header('Accept-Language', 'en')] ?? $this->service_name['en'] ?? $this->service_name['ar'] ?? (is_string(reset($this->service_name)) ? reset($this->service_name) : 'Dental Service'))
+                : $this->service_name,
             'tooth_number'    => $this->tooth_number,
             'quantity'        => $this->quantity,
             'unit_price'      => $this->unit_price,
