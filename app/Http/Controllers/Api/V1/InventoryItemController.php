@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreInventoryItemRequest;
 use App\Http\Resources\InventoryItemResource;
 use App\Models\InventoryItem;
 use Illuminate\Http\JsonResponse;
@@ -46,6 +47,22 @@ class InventoryItemController extends Controller
         return $this->respondPaginated(
             InventoryItemResource::collection($items),
             'Inventory items retrieved successfully.'
+        );
+    }
+
+    /**
+     * Store a newly created inventory item.
+     */
+    public function store(StoreInventoryItemRequest $request): JsonResponse
+    {
+        Gate::authorize('create', InventoryItem::class);
+
+        $item = InventoryItem::create($request->validated());
+
+        return $this->respondSuccess(
+            new InventoryItemResource($item),
+            'Inventory item created successfully.',
+            201
         );
     }
 
