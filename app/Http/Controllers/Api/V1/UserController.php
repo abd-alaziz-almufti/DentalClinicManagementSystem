@@ -37,7 +37,7 @@ class UserController extends Controller
                     fn ($r) => $r->where('name', $value)
                 )),
             )
-            ->allowedSorts(['name', 'created_at'])
+            ->allowedSorts('name', 'created_at')
             ->defaultSort('-created_at')
             ->paginate(min((int) $request->integer('per_page', 20), 100));
 
