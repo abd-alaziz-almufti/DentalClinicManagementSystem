@@ -29,13 +29,14 @@ class UserController extends Controller
         }
 
         $users = QueryBuilder::for($query)
-            ->allowedFilters([
+            ->allowedFilters(
                 AllowedFilter::exact('branch_id'),
+                AllowedFilter::partial('name'),
                 AllowedFilter::callback('role', fn ($q, $value) => $q->whereHas(
                     'roles',
                     fn ($r) => $r->where('name', $value)
                 )),
-            ])
+            )
             ->allowedSorts(['name', 'created_at'])
             ->defaultSort('-created_at')
             ->paginate(min((int) $request->integer('per_page', 20), 100));
